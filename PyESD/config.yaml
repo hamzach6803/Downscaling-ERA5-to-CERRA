@@ -1,0 +1,58 @@
+model:
+  name: PyESD
+  type: pixelwise_linear_regression
+
+data:
+  meteo_variable: from utils.METEO_VARIABLE
+  era5_path: from utils.ERA5_DATA_PATH
+  cerra_path: from utils.CERRA_DATA_PATH
+  train_ratio: 0.8
+  default_paths:
+    local: C:/Users/hamza/OneDrive/Desktop/PFE/Articles/repo/pfe/model/data
+    docker: /home/pfe/model/data
+  note: scripts read runtime values from utils.py and command-line arguments
+
+train:
+  command: python PyESD/train.py
+  low_ram_command: python PyESD/train.py --chunk-size 4 --num-workers 0
+  very_low_ram_command: python PyESD/train.py --chunk-size 2 --max-train-samples 1000 --num-workers 0
+  chunk_size: 16
+  max_train_samples: null
+  num_workers: 0
+  memory_note: PyESD trains by chunks to avoid loading all timesteps in RAM.
+
+prepare_prediction:
+  command: python make_to_predict.py --date 2025-01-03
+  output: to_predict/to_predict_<variable>.nc
+  note: run from the model folder before predict.py to avoid loading all dates
+
+predict:
+  command: python PyESD/predict.py
+  low_ram_command: python PyESD/predict.py --to-predict to_predict/to_predict_<variable>.nc
+  date: null
+  time_index: null
+  to_predict: to_predict/to_predict_<variable>.nc
+  random_test_map_when_no_date: true
+
+plot:
+  date: null
+  time_index: 0
+  dpi: 150
+  figure_size: [18, 4]
+  cmap_mode: auto_by_variable
+  cmap_by_variable:
+    t2m: coolwarm
+    ws10: viridis
+    tp: Blues
+  value_limits:
+    t2m: percentile_1_99
+    ws10: positive_percentile_99
+    tp: positive_percentile_99
+    default: percentile_1_99
+  error_cmap: Reds
+  error_limits: positive_percentile_95
+
+outputs:
+  checkpoint: PyESD/checkpoints/pyesd_linear_<variable>.npz
+  prediction: PyESD/predictions/pyesd_pred_<variable>.nc
+  plot: PyESD/predictions/pyesd_<variable>_000.png

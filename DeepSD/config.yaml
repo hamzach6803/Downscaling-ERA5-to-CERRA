@@ -1,0 +1,59 @@
+model:
+  name: DeepSD
+  type: deep_cnn
+
+data:
+  meteo_variable: from utils.METEO_VARIABLE
+  era5_path: from utils.ERA5_DATA_PATH
+  cerra_path: from utils.CERRA_DATA_PATH
+  train_ratio: 0.8
+  default_paths:
+    local: C:/Users/hamza/OneDrive/Desktop/PFE/Articles/repo/pfe/model/data
+    docker: /home/pfe/model/data
+  note: scripts read runtime values from utils.py and command-line arguments
+
+train:
+  command: python DeepSD/train.py
+  low_ram_command: python DeepSD/train.py --batch-size 1 --max-train-samples 128 --num-workers 0 --device cpu
+  epochs: 50
+  batch_size: 4
+  device: auto
+  learning_rate: 0.0001
+  max_train_samples: null
+  num_workers: 0
+
+prepare_prediction:
+  command: python make_to_predict.py --date 2025-01-03
+  output: to_predict/to_predict_<variable>.nc
+
+predict:
+  command: python DeepSD/predict.py
+  low_ram_command: python DeepSD/predict.py --to-predict to_predict/to_predict_<variable>.nc
+  date: null
+  time_index: null
+  to_predict: to_predict/to_predict_<variable>.nc
+  random_test_map_when_no_date: true
+
+plot:
+  date: null
+  time_index: 0
+  dpi: 150
+  figure_size: [18, 4]
+  cmap_mode: auto_by_variable
+  cmap_by_variable:
+    t2m: coolwarm
+    ws10: viridis
+    tp: Blues
+  value_limits:
+    t2m: percentile_1_99
+    ws10: positive_percentile_99
+    tp: positive_percentile_99
+    default: percentile_1_99
+  error_cmap: Reds
+  error_limits: positive_percentile_95
+
+outputs:
+  checkpoint: DeepSD/checkpoints/deepsd_best_<variable>.pth
+  loss_plot: DeepSD/checkpoints/deepsd_loss_<variable>.png
+  prediction: DeepSD/predictions/deepsd_pred_<variable>.nc
+  plot: DeepSD/predictions/deepsd_<variable>_000.png

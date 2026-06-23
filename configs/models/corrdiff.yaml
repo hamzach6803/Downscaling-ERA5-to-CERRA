@@ -1,0 +1,8 @@
+name: CorrDiff
+type: regression_lineaire_plus_diffusion_residus
+model_dir: CorrDiff
+train: python CorrDiff/train.py --batch-size 1 --patch-size 32 --channels 16 --max-train-samples 128 --num-workers 0 --device cpu
+predict: python CorrDiff/predict.py --to-predict to_predict/to_predict_t2m.nc --sample-steps 5
+checkpoints_dir: CorrDiff/checkpoints
+predictions_dir: CorrDiff/predictions
+

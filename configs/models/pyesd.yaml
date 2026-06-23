@@ -1,0 +1,8 @@
+name: PyESD
+type: regression_lineaire
+model_dir: PyESD
+train: python PyESD/train.py --chunk-size 4 --num-workers 0
+predict: python PyESD/predict.py
+checkpoints_dir: PyESD/checkpoints
+predictions_dir: PyESD/predictions
+

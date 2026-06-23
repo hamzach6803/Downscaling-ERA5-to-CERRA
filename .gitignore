@@ -1,0 +1,37 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+.venv/
+venv/
+env/
+CAE/
+web_app/
+DDPM2/
+logs/
+
+# Local data and generated artifacts.
+data/raw/
+data/processed/
+data/*.nc
+data/*.csv
+to_predict/
+to_predict_test/
+outputs/*
+!outputs/README.md
+web_app/
+
+# Heavy model artifacts kept locally.
+*.pth
+*.pt
+*.npz
+*.nc
+*.zip
+
+# Generated figures and metrics.
+*.png
+*.csv
+
+# Editor / OS noise.
+.DS_Store
+Thumbs.db

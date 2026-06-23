@@ -1,0 +1,28 @@
+data:
+  cerra_file: "../../data/cerra_2025_90times.nc"
+  era5_file: "../../data/era5_2025_90times.nc"
+  predictions_dir: "../outputs/comparisons/selected_test/results_extreme90/predictions"
+  metadata_file: "../../data/extreme_2025_90times_metadata.csv"
+  variable: "t2m"
+
+land_mask:
+  file: "../../data/land_mask.nc"
+  variable: "lsm"
+  land_threshold: 0.5
+
+domain:
+  lat_min: 20.0
+  lat_max: 36.0
+  lon_min: -15.0
+  lon_max: -3.0
+
+thresholds:
+  unit: "C"
+  heat_threshold: 35.0
+  cold_threshold: 5.0
+
+output:
+  output_dir: "../outputs/masks/extreme_batch"
+
+figure_info:
+  show_file_info: true

@@ -1,0 +1,8 @@
+name: DeepSD
+type: cnn_super_resolution
+model_dir: DeepSD
+train: python DeepSD/train.py --batch-size 1 --max-train-samples 128 --num-workers 0 --device cpu
+predict: python DeepSD/predict.py --to-predict to_predict/to_predict_t2m.nc
+checkpoints_dir: DeepSD/checkpoints
+predictions_dir: DeepSD/predictions
+

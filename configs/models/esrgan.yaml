@@ -1,0 +1,8 @@
+name: ESRGAN
+type: gan_super_resolution
+model_dir: ESRGAN
+train: python ESRGAN/train.py --batch-size 1 --patch-size 32 --channels 16 --rrdb-blocks 1 --max-train-samples 128 --num-workers 0 --device cpu
+predict: python ESRGAN/predict.py --to-predict to_predict/to_predict_t2m.nc
+checkpoints_dir: ESRGAN/checkpoints
+predictions_dir: ESRGAN/predictions
+

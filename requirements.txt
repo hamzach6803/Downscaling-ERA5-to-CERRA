@@ -1,0 +1,16 @@
+# Core scientific stack
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+PyYAML>=6.0
+
+# NetCDF / climate data handling
+xarray>=2023.1
+netCDF4>=1.6
+
+# Deep learning models
+torch>=2.0
+
+# Plotting and figures
+matplotlib>=3.7
+cartopy>=0.22

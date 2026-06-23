@@ -1,0 +1,69 @@
+model:
+  name: CorrDiff
+  type: linear_regression_plus_score_diffusion
+  diffusion: ve_sde
+
+data:
+  meteo_variable: from utils.METEO_VARIABLE
+  era5_path: from utils.ERA5_DATA_PATH
+  cerra_path: from utils.CERRA_DATA_PATH
+  train_ratio: 0.8
+  mnt: false
+  default_paths:
+    local: C:/Users/hamza/OneDrive/Desktop/PFE/Articles/repo/pfe/model/data
+    docker: /home/pfe/model/data
+  note: scripts read runtime values from utils.py and command-line arguments
+
+train:
+  command: python CorrDiff/train.py
+  epochs: 20
+  batch_size: 4
+  device: auto
+  patch_size: 64
+  channels: 32
+  sigma_min: 0.01
+  sigma_max: 1.0
+  lambda_consistency: 0.0
+  amp: true
+  max_train_samples: null
+  num_workers: 0
+  low_memory_command: python CorrDiff/train.py --device cuda --batch-size 1 --patch-size 32 --channels 16 --max-train-samples 128 --num-workers 0
+
+prepare_prediction:
+  command: python make_to_predict.py --date 2025-01-03
+  output: to_predict/to_predict_<variable>.nc
+
+predict:
+  command: python CorrDiff/predict.py
+  low_ram_command: python CorrDiff/predict.py --to-predict to_predict/to_predict_<variable>.nc
+  date: null
+  time_index: null
+  to_predict: to_predict/to_predict_<variable>.nc
+  random_test_map_when_no_date: true
+  sample_steps: 20
+  langevin_steps: 1
+  snr: 0.15
+
+plot:
+  date: null
+  time_index: 0
+  dpi: 150
+  figure_size: [18, 4]
+  cmap_mode: auto_by_variable
+  cmap_by_variable:
+    t2m: coolwarm
+    ws10: viridis
+    tp: Blues
+  value_limits:
+    t2m: percentile_1_99
+    ws10: positive_percentile_99
+    tp: positive_percentile_99
+    default: percentile_1_99
+  error_cmap: Reds
+  error_limits: positive_percentile_95
+
+outputs:
+  checkpoint: CorrDiff/checkpoints/corrdiff_score_<variable>.pth
+  loss_plot: CorrDiff/checkpoints/corrdiff_loss_<variable>.png
+  prediction: CorrDiff/predictions/corrdiff_pred_<variable>.nc
+  plot: CorrDiff/predictions/corrdiff_<variable>_000.png

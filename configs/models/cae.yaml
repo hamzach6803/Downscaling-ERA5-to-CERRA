@@ -1,0 +1,8 @@
+name: CAE
+type: convolutional_autoencoder
+model_dir: CAE
+train: python CAE/train.py --batch-size 1 --max-train-samples 128 --num-workers 0 --device cpu
+predict: python CAE/predict.py --to-predict to_predict/to_predict_t2m.nc
+checkpoints_dir: CAE/checkpoints
+predictions_dir: CAE/predictions
+
